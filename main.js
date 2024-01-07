@@ -44,7 +44,7 @@
 
     // Dynamically create an iframe
     var iframe = document.createElement('iframe');
-    iframe.src = `https://chatit-eta.vercel.app?tenantId=${tenant}&sessionId=${session}`;
+    iframe.src = `http://172.208.19.16:3000?tenantId=${tenant}&sessionId=${session}`;
     iframe.style.cssText = "position: fixed; z-index: 10; top: 0px; left: 0px; width: 100vw; height: 100vh;";
     iframe.title = "Chatbot";
 
