@@ -29,7 +29,7 @@
             .then(data => {
                 const sessionId = data?.id;
                 session = sessionId;
-                setCookie('nosupport', JSON.stringify({ tenantId, sessionId }));
+                setCookie('nosupport', JSON.stringify({ tenantId, sessionId }), 5);
             })
             .catch(error => console.error('Error fetching session ID:', error));
         // setCookie('nosupport', window.chatConfig);
