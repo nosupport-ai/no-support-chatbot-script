@@ -13,39 +13,42 @@
         return match ? match[2] : null;
     }
 
+    console.log(window?.chatConfig);
 
     // Check if the session ID cookie is present
     const nosupport = JSON.parse(getCookie('nosupport'));
 
-    let tenant = '', session = '';
+    let tenant='',session='';
 
     // If the session ID cookie is not present, set the default value
-    if (!nosupport || nosupport.tenantId !== window?.chatConfig?.tenantId) {
-        console.log('setting')
+    if (!nosupport || nosupport.tenantId!==window?.chatConfig?.tenantId) {
+        console.log('setting cookie')
         const { tenantId } = window?.chatConfig;
-        tenant = tenantId;
-        fetch('http://api.nosupport.in/api/session' + `?tenantId=${tenantId}`) // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
+        tenant=tenantId;
+        fetch('http://api.nosupport.in/api/session'+`?tenantId=${tenantId}`) // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
             .then(response => response.json())
             .then(data => {
                 const sessionId = data?.id;
-                session = sessionId;
-                setCookie('nosupport', JSON.stringify({ tenantId, sessionId }), 5);
+                session=sessionId;
+                console.log(data);
+                setCookie('nosupport', JSON.stringify({tenantId, sessionId}));
             })
             .catch(error => console.error('Error fetching session ID:', error));
         // setCookie('nosupport', window.chatConfig);
     }
-    else {
-        console.log('getting')
-        tenant = nosupport?.tenantId;
-        session = nosupport?.sessionId;
+    else{
+        console.log('getting cookie');
+        console.log(nosupport);
+        tenant=nosupport?.tenantId;
+        session=nosupport?.sessionId;
     }
 
     // Set the chatBotConfig using the retrieved or default session ID
 
     // Dynamically create an iframe
     var iframe = document.createElement('iframe');
-    iframe.src = `http://172.208.19.16:3000?tenantId=${tenant}&sessionId=${session}`;
-    iframe.style.cssText = "position: fixed; z-index: 10; top: 0px; left: 0px; width: 100vw; height: 100vh;";
+    iframe.src = `http://localhost:3000?tenantId=${tenant}&sessionId=${session}`;
+    iframe.style.cssText = "position: fixed; z-index:-10; top: 0px; left: 0px; width: 100vw; height: 100vh;";
     iframe.title = "Chatbot";
 
     document.body.appendChild(iframe);
