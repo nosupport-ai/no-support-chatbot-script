@@ -8,11 +8,9 @@
 
     // Function to get the value of a cookie
     function getCookie(name) {
-
         const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
         return match ? match[2] : null;
     }
-
 
     // Check if the session ID cookie is present
     const nosupport = JSON.parse(getCookie('nosupport'));
@@ -21,7 +19,7 @@
 
     // If the session ID cookie is not present, set the default value
     if (!nosupport || nosupport.tenantId !== window?.chatConfig?.tenantId) {
-        console.log('setting')
+        
         const { tenantId } = window?.chatConfig;
         tenant = tenantId;
         fetch('http://api.nosupport.in/api/session' + `?tenantId=${tenantId}`) // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
@@ -29,24 +27,62 @@
             .then(data => {
                 const sessionId = data?.id;
                 session = sessionId;
-                setCookie('nosupport', JSON.stringify({ tenantId, sessionId }), 5);
+                setCookie('nosupport', JSON.stringify({ tenantId, sessionId }));
             })
             .catch(error => console.error('Error fetching session ID:', error));
-        // setCookie('nosupport', window.chatConfig);
     }
     else {
-        console.log('getting')
         tenant = nosupport?.tenantId;
         session = nosupport?.sessionId;
     }
 
-    // Set the chatBotConfig using the retrieved or default session ID
+    const handleClick = () => {
+        sendMessageToIframe('ButtonClicked')
+    }
+
 
     // Dynamically create an iframe
-    var iframe = document.createElement('iframe');
-    iframe.src = `http://172.208.19.16:3000?tenantId=${tenant}&sessionId=${session}`;
-    iframe.style.cssText = "position: fixed; z-index: 10; top: 0px; left: 0px; width: 100vw; height: 100vh;";
-    iframe.title = "Chatbot";
+    var btns = document.createElement('button');
+    btns.style.cssText = "position: fixed; z-index: 100; bottom:40px; right: 40px; width: 70px; height: 70px; border-radius: 50%; background: transparent; border: 0px; outline: none;";
+    btns.id = 'nosupport-chatbot-button';
+    btns.onclick = handleClick;
+    document.body.appendChild(btns);
 
+
+    var iframe = document.createElement('iframe');
+    iframe.src = `http://localhost:3000?tenantId=${tenant}&sessionId=${session}`;
+    iframe.style.cssText = "position: fixed; z-index: 9999; bottom: 0; right: 0; width: 100vw; height: 100vh; pointer-events: none;";
+    iframe.title = "Chatbot";
+    iframe.id = 'iframeButton';
     document.body.appendChild(iframe);
+
+    function sendMessageToIframe(message) {
+        const iframe = document.getElementById('iframeButton');
+        const btn = document.getElementById('nosupport-chatbot-button');
+        if (iframe) {
+            iframe.style.pointerEvents = 'auto';
+            btn.style.pointerEvents='none';
+            btn.style.zIndex = '-10';
+            iframe.contentWindow.postMessage(message, '*');
+        }
+    }
+
+    window.addEventListener('message', (event) => {
+        const message = event.data;
+
+        if (message === 'sendchatbot') {
+
+            const iframe = document.getElementById('iframeButton');
+            const btn = document.getElementById('nosupport-chatbot-button');
+
+            if (iframe) {
+                iframe.style.pointerEvents = 'none';
+            }
+            if (btn) {
+                btn.style.pointerEvents='auto';
+                btn.style.zIndex = '100';
+            }
+        }
+    });
+
 })();
