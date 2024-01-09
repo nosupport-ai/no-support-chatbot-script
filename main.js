@@ -43,7 +43,7 @@
 
     // Dynamically create an iframe
     var btns = document.createElement('button');
-    btns.style.cssText = "position: fixed; z-index: 100; bottom:40px; right: 40px; width: 70px; height: 70px; border-radius: 50%; background: transparent; border: 0px; outline: none; cursor: pointer;";
+    btns.style.cssText = "position: fixed; z-index: 9998; bottom:40px; right: 40px; width: 70px; height: 70px; border-radius: 50%; background: transparent; border: 0px; outline: none; cursor: pointer;";
     btns.id = 'nosupport-chatbot-button';
     btns.onclick = handleClick;
     document.body.appendChild(btns);
@@ -80,7 +80,7 @@
             }
             if (btn) {
                 btn.style.pointerEvents='auto';
-                btn.style.zIndex = '100';
+                btn.style.zIndex = '9998';
             }
         }
     });
