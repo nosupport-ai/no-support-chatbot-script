@@ -4,15 +4,19 @@ window.onload = function () {
         console.log('window load');
 
         function setCookie(name, value, days) {
+            console.log('cookie setting')
             const date = new Date();
             date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
             const expires = `expires=${date.toUTCString()}`;
             document.cookie = `${name}=${value}; ${expires}; path=/`;
+            console.log('cookie setted')
         }
 
         // Function to get the value of a cookie
         function getCookie(name) {
+            console.log('cookie getting')
             const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            console.log('cookie returning')
             return match ? match[2] : null;
         }
 
@@ -26,21 +30,27 @@ window.onload = function () {
 
             const { tenantId } = window?.chatConfig;
             tenant = tenantId;
+
+            console.log('cookie fetching')
             fetch('https://api.nosupport.in/api/session' + `?tenantId=${tenantId}`) // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
                 .then(response => response.json())
                 .then(data => {
                     const sessionId = data?.id;
                     session = sessionId;
                     setCookie('nosupport', JSON.stringify({ tenantId, sessionId }), 5);
+                    console.log('cookie fetched')
                 })
                 .catch(error => console.error('Error fetching session ID:', error));
         }
         else {
+            console.log('else running')
             tenant = nosupport?.tenantId;
             session = nosupport?.sessionId;
+            console.log('else runned')
         }
 
         const handleClick = () => {
+            console.log('button cliec')
             sendMessageToIframe('ButtonClicked')
         }
 
@@ -63,11 +73,13 @@ window.onload = function () {
         function sendMessageToIframe(message) {
             const iframe = document.getElementById('iframeButton');
             const btn = document.getElementById('nosupport-chatbot-button');
+            console.log('sending to ifram')
             if (iframe) {
                 iframe.style.pointerEvents = 'auto';
                 btn.style.pointerEvents = 'none';
                 btn.style.zIndex = '-10';
                 iframe.contentWindow.postMessage(message, '*');
+                console.log('sent')
             }
         }
 
