@@ -21,6 +21,11 @@ window.onload = function () {
 
         let tenant = '', session = '';
 
+        
+        const handleClick = () => {
+            sendMessageToIframe('ButtonClicked')
+        }
+
         // If the session ID cookie is not present, set the default value
         if (!nosupport || nosupport.tenantId !== window?.chatConfig?.tenantId) {
 
@@ -43,13 +48,9 @@ window.onload = function () {
             createIframe(tenant, session);
         }
 
-        const handleClick = () => {
-            sendMessageToIframe('ButtonClicked')
-        }
-
 
         var btns;
-        
+
         function createButton() {
             btns = document.createElement('button');
             btns.style.cssText = "position: fixed; z-index: 9998; bottom:40px; right: 40px; width: 70px; height: 70px; border-radius: 50%; background: transparent; border: 0px; outline: none; cursor: pointer;";
