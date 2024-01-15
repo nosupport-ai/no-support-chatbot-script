@@ -2,7 +2,7 @@ window.onload = function () {
     (function () {
 
         console.log('window load');
-        
+
         function setCookie(name, value, days) {
             const date = new Date();
             date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -31,7 +31,7 @@ window.onload = function () {
                 .then(data => {
                     const sessionId = data?.id;
                     session = sessionId;
-                    setCookie('nosupport', JSON.stringify({ tenantId, sessionId }));
+                    setCookie('nosupport', JSON.stringify({ tenantId, sessionId }), 5);
                 })
                 .catch(error => console.error('Error fetching session ID:', error));
         }
