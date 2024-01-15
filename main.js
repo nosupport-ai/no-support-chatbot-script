@@ -33,12 +33,14 @@ window.onload = function () {
                     const sessionId = data?.id;
                     session = sessionId;
                     setCookie('nosupport', JSON.stringify({ tenantId, sessionId }), 5);
+                    createIframe(tenant, session);
                 })
                 .catch(error => console.error('Error fetching session ID:', error));
         }
         else {
             tenant = nosupport?.tenantId;
             session = nosupport?.sessionId;
+            createIframe(tenant, session);
         }
 
         const handleClick = () => {
@@ -46,20 +48,33 @@ window.onload = function () {
         }
 
 
-        // Dynamically create an iframe
-        var btns = document.createElement('button');
-        btns.style.cssText = "position: fixed; z-index: 9998; bottom:40px; right: 40px; width: 70px; height: 70px; border-radius: 50%; background: transparent; border: 0px; outline: none; cursor: pointer;";
-        btns.id = 'nosupport-chatbot-button';
-        btns.onclick = handleClick;
-        document.body.appendChild(btns);
+        var btns;
+        
+        function createButton() {
+            btns = document.createElement('button');
+            btns.style.cssText = "position: fixed; z-index: 9998; bottom:40px; right: 40px; width: 70px; height: 70px; border-radius: 50%; background: transparent; border: 0px; outline: none; cursor: pointer;";
+            btns.id = 'nosupport-chatbot-button';
+            btns.onclick = handleClick;
+            document.body.appendChild(btns);
+        }
 
+        var iframe;
+        function createIframe(tenant, session) {
+            iframe = document.createElement('iframe');
+            iframe.src = `https://localhost:3000?tenantId=${tenant}&sessionId=${session}`;
+            iframe.style.cssText = "position: fixed; z-index: 9999; bottom: 0; right: 0; width: 100vw; height: 100dvh; pointer-events: none;";
+            iframe.title = "Chatbot";
+            iframe.id = 'iframeButton';
+            document.body.appendChild(iframe);
 
-        var iframe = document.createElement('iframe');
-        iframe.src = `https://localhost:3000?tenantId=${tenant}&sessionId=${session}`;
-        iframe.style.cssText = "position: fixed; z-index: 9999; bottom: 0; right: 0; width: 100vw; height: 100dvh; pointer-events: none;";
-        iframe.title = "Chatbot";
-        iframe.id = 'iframeButton';
-        document.body.appendChild(iframe);
+            createButton();
+        }
+        // var iframe = document.createElement('iframe');
+        // iframe.src = `https://localhost:3000?tenantId=${tenant}&sessionId=${session}`;
+        // iframe.style.cssText = "position: fixed; z-index: 9999; bottom: 0; right: 0; width: 100vw; height: 100dvh; pointer-events: none;";
+        // iframe.title = "Chatbot";
+        // iframe.id = 'iframeButton';
+        // document.body.appendChild(iframe);
 
         function sendMessageToIframe(message) {
             const iframe = document.getElementById('iframeButton');
