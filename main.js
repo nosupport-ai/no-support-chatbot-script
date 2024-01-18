@@ -21,7 +21,7 @@ window.onload = function () {
 
         let tenant = '', session = '';
 
-        
+
         const handleClick = () => {
             sendMessageToIframe('ButtonClicked')
         }
@@ -32,7 +32,7 @@ window.onload = function () {
             const { tenantId } = window?.chatConfig;
             tenant = tenantId;
 
-            fetch('https://api.nosupport.in/api/session' + `?tenantId=${tenantId}`) // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
+            fetch('https://api.nosupport.in/api/session' + `?tenantId=${tenantId}`)
                 .then(response => response.json())
                 .then(data => {
                     const sessionId = data?.id;
@@ -62,7 +62,7 @@ window.onload = function () {
         var iframe;
         function createIframe(tenant, session) {
             iframe = document.createElement('iframe');
-            iframe.src = `https://bot.nosupport.in?tenantId=${tenant}&sessionId=${session}`;
+            iframe.src = `https://localhost:3000?tenantId=${tenant}&sessionId=${session}`;
             iframe.style.cssText = "position: fixed; z-index: 9999; bottom: 0; right: 0; width: 100vw; height: 100dvh; pointer-events: none;";
             iframe.title = "Chatbot";
             iframe.id = 'iframeButton';
@@ -75,9 +75,7 @@ window.onload = function () {
             const iframe = document.getElementById('iframeButton');
             const btn = document.getElementById('nosupport-chatbot-button');
             if (iframe) {
-                iframe.style.pointerEvents = 'auto';
-                btn.style.pointerEvents = 'none';
-                btn.style.zIndex = '-10';
+
                 iframe.contentWindow.postMessage(message, '*');
                 console.log('sent')
             }
@@ -97,6 +95,15 @@ window.onload = function () {
                 if (btn) {
                     btn.style.pointerEvents = 'auto';
                     btn.style.zIndex = '9998';
+                }
+            }
+            else if (message === 'chatBotOpen') {
+                const iframe = document.getElementById('iframeButton');
+                const btn = document.getElementById('nosupport-chatbot-button');
+                if (iframe && btn) {
+                    iframe.style.pointerEvents = 'auto';
+                    btn.style.pointerEvents = 'none';
+                    btn.style.zIndex = '-10';
                 }
             }
         });
