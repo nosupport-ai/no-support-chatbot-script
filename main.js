@@ -98,6 +98,7 @@ window.onload = function () {
                 }
             }
             else if (message === 'chatBotOpen') {
+                console.log(message + 'message from chatbot')
                 const iframe = document.getElementById('iframeButton');
                 const btn = document.getElementById('nosupport-chatbot-button');
                 if (iframe && btn) {
