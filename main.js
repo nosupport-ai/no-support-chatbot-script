@@ -32,7 +32,7 @@ window.onload = function () {
             const { tenantId } = window?.chatConfig;
             tenant = tenantId;
 
-            fetch('https://api.nosupport.in/api/session' + `?tenantId=${tenantId}`)
+            fetch('https://api.nosupport.in/api/session' + `?tenantId=${tenantId}`) // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
                 .then(response => response.json())
                 .then(data => {
                     const sessionId = data?.id;
@@ -49,37 +49,38 @@ window.onload = function () {
         }
 
 
-        var btns;
-
-        function createButton() {
-            btns = document.createElement('button');
-            btns.style.cssText = "position: fixed; z-index: 9998; bottom:40px; right: 40px; width: 70px; height: 70px; border-radius: 50%; background: transparent; border: 0px; outline: none; cursor: pointer;";
-            btns.id = 'nosupport-chatbot-button';
-            btns.onclick = handleClick;
-            document.body.appendChild(btns);
+        function sendMessageToIframe() {
+            console.log('ifram message sent')
+            const iframe = document.getElementById('iframeButton');
+            const overlayDiv = document.getElementById('overlayDiv')
+            // const btn = document.getElementById('nosupport-chatbot-button');
+            if (iframe && overlayDiv) {
+                console.log('ifram message true')
+                iframe.contentWindow.postMessage('ButtonClicked', '*');
+            }
         }
 
         var iframe;
         function createIframe(tenant, session) {
             iframe = document.createElement('iframe');
             iframe.src = `https://bot.nosupport.in?tenantId=${tenant}&sessionId=${session}`;
-            iframe.style.cssText = "position: fixed; z-index: 9999; bottom: 0; right: 0; width: 100vw; height: 100dvh; pointer-events: none;";
+            iframe.style.cssText = "position: fixed; z-index: 9999; border:0px; bottom: 32px; right: 32px; width: 65px; height: 65px;transition: all 100ms";
             iframe.title = "Chatbot";
             iframe.id = 'iframeButton';
             document.body.appendChild(iframe);
 
-            createButton();
+            const overlayDiv = document.createElement('div');
+            overlayDiv.style.cssText = "position: fixed; z-index: 10000; bottom: 32px; right: 32px; width: 65px; height: 65px;transition: all 100ms;cursor: pointer";
+            overlayDiv.addEventListener('click', sendMessageToIframe);
+            overlayDiv.id = 'overlayDiv'
+            document.body.appendChild(overlayDiv);
+
+            iframe.addEventListener('load', () => {
+                overlayDiv.style.width = `${iframe.clientWidth}px`;
+                overlayDiv.style.height = `${iframe.clientHeight}px`;
+            });
         }
 
-        function sendMessageToIframe(message) {
-            const iframe = document.getElementById('iframeButton');
-            const btn = document.getElementById('nosupport-chatbot-button');
-            if (iframe) {
-
-                iframe.contentWindow.postMessage(message, '*');
-                console.log('sent')
-            }
-        }
 
         window.addEventListener('message', (event) => {
             const message = event.data;
@@ -87,24 +88,42 @@ window.onload = function () {
             if (message === 'sendchatbot') {
 
                 const iframe = document.getElementById('iframeButton');
-                const btn = document.getElementById('nosupport-chatbot-button');
+                const overlayDiv = document.getElementById('overlayDiv')
 
-                if (iframe) {
-                    iframe.style.pointerEvents = 'none';
-                }
-                if (btn) {
-                    btn.style.pointerEvents = 'auto';
-                    btn.style.zIndex = '9998';
+                if (iframe && overlayDiv) {
+                    iframe.style.width = '65px';
+                    iframe.style.height = '65px';
+                    iframe.style.top = 'auto';
+                    iframe.style.left = 'auto';
+                    iframe.style.right = '32px';
+                    iframe.style.bottom = '32px';
+                    iframe.style.transitionDuration = '100ms';
+                    overlayDiv.style.transitionDuration = '100ms';
+                    overlayDiv.style.zIndex = '10000';
+                    console.log('in overlay close')
                 }
             }
             else if (message === 'chatBotOpen') {
                 console.log(message + 'message from chatbot')
                 const iframe = document.getElementById('iframeButton');
-                const btn = document.getElementById('nosupport-chatbot-button');
-                if (iframe && btn) {
-                    iframe.style.pointerEvents = 'auto';
-                    btn.style.pointerEvents = 'none';
-                    btn.style.zIndex = '-10';
+                const overlayDiv = document.getElementById('overlayDiv');
+                if (iframe && overlayDiv) {
+                    if (window.innerWidth >= 400) {
+                        iframe.style.width = '400px';
+                        iframe.style.height = '600px';
+                    }
+                    else {
+                        iframe.style.width = '100vw';
+                        iframe.style.height = '100vh';
+                        iframe.style.top = '0px';
+                        iframe.style.bottom = '0px';
+                        iframe.style.right = '0px';
+                        iframe.style.left = '0px';
+    
+                    }
+                    iframe.style.transitionDuration = '100ms';
+                    overlayDiv.style.zIndex = '-10';
+                    overlayDiv.style.transitionDuration = '100ms';
                 }
             }
         });
