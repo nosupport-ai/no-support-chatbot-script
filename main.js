@@ -91,6 +91,11 @@ window.onload = function () {
                 const overlayDiv = document.getElementById('overlayDiv')
 
                 if (iframe && overlayDiv) {
+                    if (window.innerWidth >= 400) {
+                        iframe.style.minWidth = '65px';
+                        iframe.style.maxWidth = '65px';
+                        iframe.style.minHeight = '65px';
+                    }
                     iframe.style.width = '65px';
                     iframe.style.height = '65px';
                     iframe.style.top = 'auto';
@@ -109,8 +114,11 @@ window.onload = function () {
                 const overlayDiv = document.getElementById('overlayDiv');
                 if (iframe && overlayDiv) {
                     if (window.innerWidth >= 400) {
-                        iframe.style.width = '400px';
-                        iframe.style.height = '600px';
+                        iframe.style.width = '52vh';
+                        iframe.style.minWidth = '400px';
+                        iframe.style.maxWidth = '90vw';
+                        iframe.style.height = '85vh';
+                        iframe.style.minHeight = '600px';
                     }
                     else {
                         iframe.style.width = '100vw';
@@ -119,7 +127,7 @@ window.onload = function () {
                         iframe.style.bottom = '0px';
                         iframe.style.right = '0px';
                         iframe.style.left = '0px';
-    
+
                     }
                     iframe.style.transitionDuration = '100ms';
                     overlayDiv.style.zIndex = '-10';
