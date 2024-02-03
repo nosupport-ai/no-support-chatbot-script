@@ -121,8 +121,8 @@ window.onload = function () {
                         iframe.style.minHeight = '600px';
                     }
                     else {
-                        iframe.style.width = '100vw';
-                        iframe.style.height = '100vh';
+                        iframe.style.width = '100%';
+                        iframe.style.height = '100%';
                         iframe.style.top = '0px';
                         iframe.style.bottom = '0px';
                         iframe.style.right = '0px';
