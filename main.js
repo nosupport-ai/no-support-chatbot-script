@@ -63,7 +63,7 @@ window.onload = function () {
         var iframe;
         function createIframe(tenant, session) {
             iframe = document.createElement('iframe');
-            iframe.src = `https://192.168.29.147:3000?tenantId=${tenant}&sessionId=${session}`;
+            iframe.src = `https://localhost:3000?tenantId=${tenant}&sessionId=${session}`;
             iframe.style.cssText = "position: fixed; z-index: 9999; border:0px; bottom: 32px; right: 32px; width: 65px; height: 65px;transition: all 100ms";
             iframe.title = "Chatbot";
             iframe.id = 'iframeButton';
