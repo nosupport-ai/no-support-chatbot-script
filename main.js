@@ -26,26 +26,39 @@ window.onload = function () {
             sendMessageToIframe('ButtonClicked')
         }
 
-        // If the session ID cookie is not present, set the default value
-        if (!nosupport || nosupport.tenantId !== window?.chatConfig?.tenantId) {
-
-            const { tenantId } = window?.chatConfig;
-            tenant = tenantId;
-
-            fetch('https://api.nosupport.in/api/session' + `?tenantId=${tenantId}`) // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint
+        const createSession = (tenantId) => {
+            fetch('https://api.nosupport.in/api/session' + `?tenantId=${tenantId}`)
                 .then(response => response.json())
                 .then(data => {
                     const sessionId = data?.id;
                     session = sessionId;
                     setCookie('nosupport', JSON.stringify({ tenantId, sessionId }), 5);
-                    createIframe(tenant, session);
+                    createIframe(tenantId, session);
                 })
                 .catch(error => console.error('Error fetching session ID:', error));
+        }
+
+        // If the session ID cookie is not present, set the default value
+        if (!nosupport || nosupport.tenantId !== window?.chatConfig?.tenantId) {
+
+            const { tenantId } = window?.chatConfig;
+
+            createSession(tenantId);
         }
         else {
             tenant = nosupport?.tenantId;
             session = nosupport?.sessionId;
-            createIframe(tenant, session);
+            fetch('https://api.nosupport.in/api/session' + `/${session}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data?.sessionHelpNeed === 'RESOLVED') {
+                        createSession(tenant);
+                    }
+                    else {
+                        createIframe(tenant, session);
+                    }
+                })
+                .catch(error => console.error('Error fetching session ID:', error));
         }
 
 
@@ -63,7 +76,7 @@ window.onload = function () {
         var iframe;
         function createIframe(tenant, session) {
             iframe = document.createElement('iframe');
-            iframe.src = `https://localhost:3000?tenantId=${tenant}&sessionId=${session}`;
+            iframe.src = `https://bot.nosupport.in?tenantId=${tenant}&sessionId=${session}`;
             iframe.style.cssText = "position: fixed; z-index: 9999; border:0px; bottom: 32px; right: 32px; width: 65px; height: 65px;transition: all 100ms";
             iframe.title = "Chatbot";
             iframe.id = 'iframeButton';
